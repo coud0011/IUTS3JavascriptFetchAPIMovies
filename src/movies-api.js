@@ -19,3 +19,10 @@ export function extractPaginationFromHeaders(response) {
     last: parseInt(response.headers.get("Pagination-Last-Page"), 10),
   };
 }
+
+export function extractCollectionAndPagination(response) {
+  return response.json().then((movies) => ({
+    pagination: extractPaginationFromHeaders(response),
+    collection: movies,
+  }));
+}
