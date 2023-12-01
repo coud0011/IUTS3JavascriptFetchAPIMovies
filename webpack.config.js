@@ -15,7 +15,6 @@ module.exports = {
     }),
   ],
   devServer: {
-    server: 'https',
     static: {
       directory: path.join(__dirname, "public"),
     },
