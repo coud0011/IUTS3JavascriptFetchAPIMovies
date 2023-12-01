@@ -12,3 +12,10 @@ and the size can be : « xsmall », « small », « medium » or « original » 
  */
   return `${API_URL}${imagePath}/${size}`;
 }
+
+export function extractPaginationFromHeaders(response) {
+  return {
+    current: parseInt(response.headers.get("Pagination-Current-Page"), 10),
+    last: parseInt(response.headers.get("Pagination-Last-Page"), 10),
+  };
+}
