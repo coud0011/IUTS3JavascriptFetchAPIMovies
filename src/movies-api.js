@@ -2,7 +2,8 @@ export const API_URL = "http://movies-api";
 export const IMAGE_SIZES = ["original", "xsmall", "small", "medium"];
 
 export function getAllMovies() {
-  return fetch(`${API_URL}/movies`).then((response) => response.json());
+  // eslint-disable-next-line no-use-before-define
+  return extractCollectionAndPagination(fetch(`${API_URL}/movies`));
 }
 
 export function posterUrl(imagePath, size = "original") {

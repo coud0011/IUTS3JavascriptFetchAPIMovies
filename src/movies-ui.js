@@ -16,6 +16,8 @@ export function createMovieElt(movieData) {
 export function updateMoviesElt() {
   const movieDomList = document.querySelector("article.movies-list");
   getAllMovies().then((movies) =>
-    movies.forEach((movie) => movieDomList.appendChild(createMovieElt(movie))),
+    movies.collection.forEach((movie) =>
+      movieDomList.appendChild(createMovieElt(movie)),
+    ),
   );
 }
