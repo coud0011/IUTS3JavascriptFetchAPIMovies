@@ -1,4 +1,8 @@
-import { getAllMovies, posterUrl } from "./movies-api";
+import {
+  extractCollectionAndPagination,
+  getAllMovies,
+  posterUrl,
+} from "./movies-api";
 
 export function createMovieElt(movieData) {
   const movieElt = document.createElement("article");
@@ -13,11 +17,77 @@ export function createMovieElt(movieData) {
   return movieElt;
 }
 
-export function updateMoviesElt() {
+export function updateMoviesElt(page = 1) {
+  // eslint-disable-next-line no-use-before-define
+  setLoading();
   const movieDomList = document.querySelector("article.movies-list");
-  getAllMovies().then((movies) =>
+  getAllMovies(page).then((movies) => {
+    // eslint-disable-next-line no-use-before-define
+    emptyElt(document.querySelector("article.movies-list"));
     movies.collection.forEach((movie) =>
       movieDomList.appendChild(createMovieElt(movie)),
-    ),
-  );
+    );
+    // eslint-disable-next-line no-use-before-define
+    updatePaginationElt(movies.pagination);
+  });
+}
+
+export function createPaginationButtonElt(materialIcon, isDisabled, page) {
+  const buttonElt = document.createElement("button");
+  buttonElt.className = "button";
+  buttonElt.disabled = isDisabled;
+  buttonElt.type = "button";
+  buttonElt.onclick = () => updateMoviesElt(page);
+  buttonElt.innerHTML = `<span class="material-symbols-outlined">${materialIcon}</span>`;
+  return buttonElt;
+}
+
+export function emptyElt(elt) {
+  while (elt.hasChildNodes()) {
+    elt.removeChild(elt.firstChild);
+  }
+}
+
+export function updatePaginationElt(pagination) {
+  if (pagination.last !== 1) {
+    const paginationElt = document.querySelector("nav.pagination");
+    let firstDisabled = false;
+    if (pagination.current === 1) {
+      firstDisabled = true;
+    }
+    let lastDisabled = false;
+    if (pagination.current === pagination.last) {
+      lastDisabled = true;
+    }
+    paginationElt.appendChild(
+      createPaginationButtonElt("first_page", firstDisabled, 1),
+    );
+    paginationElt.appendChild(
+      createPaginationButtonElt(
+        "navigate_before",
+        firstDisabled,
+        pagination.current - 1,
+      ),
+    );
+    const show = document.createElement("span");
+    show.className = "pagination__info";
+    show.innerHTML = `${pagination.current}/${pagination.last}`;
+    paginationElt.appendChild(show);
+    paginationElt.appendChild(
+      createPaginationButtonElt(
+        "navigate_next",
+        lastDisabled,
+        pagination.current + 1,
+      ),
+    );
+    paginationElt.appendChild(
+      createPaginationButtonElt("last_page", lastDisabled, pagination.last),
+    );
+  }
+}
+
+export function setLoading() {
+  emptyElt(document.querySelector("nav.pagination"));
+  document.querySelector("article.movies-list").innerHTML =
+    `<article class="loading">Loading...</article>`;
 }

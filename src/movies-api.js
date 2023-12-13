@@ -1,9 +1,11 @@
 export const API_URL = "http://movies-api";
 export const IMAGE_SIZES = ["original", "xsmall", "small", "medium"];
 
-export function getAllMovies() {
-  // eslint-disable-next-line no-use-before-define
-  return extractCollectionAndPagination(fetch(`${API_URL}/movies`));
+export function getAllMovies(page = 1) {
+  return fetch(`${API_URL}/movies?page=${page}`).then((response) =>
+    // eslint-disable-next-line no-use-before-define
+    extractCollectionAndPagination(response),
+  );
 }
 
 export function posterUrl(imagePath, size = "original") {
@@ -22,8 +24,9 @@ export function extractPaginationFromHeaders(response) {
 }
 
 export function extractCollectionAndPagination(response) {
-  return response.json().then((movies) => ({
-    pagination: extractPaginationFromHeaders(response),
-    collection: movies,
+  const pagination = extractPaginationFromHeaders(response);
+  return response.json().then((collection) => ({
+    pagination,
+    collection,
   }));
 }
