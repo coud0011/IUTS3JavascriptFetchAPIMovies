@@ -1,8 +1,4 @@
-import {
-  extractCollectionAndPagination,
-  getAllMovies,
-  posterUrl,
-} from "./movies-api";
+import { getAllMovies, posterUrl } from "./movies-api";
 
 export function createMovieElt(movieData) {
   const movieElt = document.createElement("article");
@@ -21,7 +17,8 @@ export function updateMoviesElt(page = 1) {
   // eslint-disable-next-line no-use-before-define
   setLoading();
   const movieDomList = document.querySelector("article.movies-list");
-  getAllMovies(page).then((movies) => {
+  const urlSearchParams = new URLSearchParams(page);
+  getAllMovies(urlSearchParams).then((movies) => {
     // eslint-disable-next-line no-use-before-define
     emptyElt(document.querySelector("article.movies-list"));
     movies.collection.forEach((movie) =>

@@ -1,11 +1,20 @@
 export const API_URL = "http://movies-api";
 export const IMAGE_SIZES = ["original", "xsmall", "small", "medium"];
 
-export function getAllMovies(page = 1) {
-  return fetch(`${API_URL}/movies?page=${page}`).then((response) =>
-    // eslint-disable-next-line no-use-before-define
-    extractCollectionAndPagination(response),
-  );
+export function getAllMovies(urlSearchParams) {
+  if (urlSearchParams instanceof URLSearchParams) {
+    return (
+      fetch(`${API_URL}/movies?page=${urlSearchParams}`)
+        .then((response) =>
+          // eslint-disable-next-line no-use-before-define
+          extractCollectionAndPagination(response),
+        )
+        // eslint-disable-next-line no-console
+        .catch((reason) => console.log(reason))
+    );
+  }
+  // eslint-disable-next-line prefer-promise-reject-errors
+  return Promise.reject("Parameter is not an URLSearchParams");
 }
 
 export function posterUrl(imagePath, size = "original") {
