@@ -4,7 +4,7 @@ export const IMAGE_SIZES = ["original", "xsmall", "small", "medium"];
 export function getAllMovies(urlSearchParams) {
   if (urlSearchParams instanceof URLSearchParams) {
     return (
-      fetch(`${API_URL}/movies?page=${urlSearchParams}`)
+      fetch(`${API_URL}/movies?${urlSearchParams}`)
         .then((response) =>
           // eslint-disable-next-line no-use-before-define
           extractCollectionAndPagination(response),

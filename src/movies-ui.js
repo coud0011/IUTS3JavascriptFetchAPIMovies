@@ -17,7 +17,8 @@ export function updateMoviesElt(page = 1) {
   // eslint-disable-next-line no-use-before-define
   setLoading();
   const movieDomList = document.querySelector("article.movies-list");
-  const urlSearchParams = new URLSearchParams(page);
+  const urlSearchParams = new URLSearchParams();
+  urlSearchParams.append("page", page);
   getAllMovies(urlSearchParams).then((movies) => {
     // eslint-disable-next-line no-use-before-define
     emptyElt(document.querySelector("article.movies-list"));
@@ -87,4 +88,10 @@ export function setLoading() {
   emptyElt(document.querySelector("nav.pagination"));
   document.querySelector("article.movies-list").innerHTML =
     `<article class="loading">Loading...</article>`;
+}
+
+export function appendSortToQuery(urlSearchParams) {
+  const tri = document.querySelector("fieldset.sort");
+  const tr = tri.checkVisibility();
+  urlSearchParams.append(tr, "asc");
 }
