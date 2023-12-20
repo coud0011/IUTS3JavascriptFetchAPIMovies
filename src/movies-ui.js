@@ -1,5 +1,6 @@
 import { getAllMovies, posterUrl } from "./movies-api";
 
+let abortController = new AbortController();
 export function createMovieElt(movieData) {
   const movieElt = document.createElement("article");
   movieElt.className = "movie-item";
@@ -14,20 +15,27 @@ export function createMovieElt(movieData) {
 }
 
 export function updateMoviesElt(page = 1) {
+  abortController.abort();
+  abortController = new AbortController();
   // eslint-disable-next-line no-use-before-define
   setLoading();
   const movieDomList = document.querySelector("article.movies-list");
   const urlSearchParams = new URLSearchParams();
+  // eslint-disable-next-line no-use-before-define
+  appendSortToQuery(urlSearchParams);
   urlSearchParams.append("page", page);
-  getAllMovies(urlSearchParams).then((movies) => {
-    // eslint-disable-next-line no-use-before-define
-    emptyElt(document.querySelector("article.movies-list"));
-    movies.collection.forEach((movie) =>
-      movieDomList.appendChild(createMovieElt(movie)),
-    );
-    // eslint-disable-next-line no-use-before-define
-    updatePaginationElt(movies.pagination);
-  });
+  getAllMovies(urlSearchParams, abortController)
+    .then((movies) => {
+      // eslint-disable-next-line no-use-before-define
+      emptyElt(document.querySelector("article.movies-list"));
+      movies.collection.forEach((movie) =>
+        movieDomList.appendChild(createMovieElt(movie)),
+      );
+
+      // eslint-disable-next-line no-use-before-define
+      updatePaginationElt(movies.pagination);
+    })
+    .catch(() => {});
 }
 
 export function createPaginationButtonElt(materialIcon, isDisabled, page) {
@@ -91,7 +99,16 @@ export function setLoading() {
 }
 
 export function appendSortToQuery(urlSearchParams) {
-  const tri = document.querySelector("fieldset.sort");
-  const tr = tri.checkVisibility();
+  const tri = document.querySelector(
+    "fieldset.sort input[type='radio']:checked",
+  );
+  const tr = tri.value;
   urlSearchParams.append(tr, "asc");
+}
+
+export function setSortButtonsEltsEvents() {
+  const buttons = document.querySelector("fieldset.sort");
+  buttons.addEventListener("change", () => {
+    updateMoviesElt();
+  });
 }
