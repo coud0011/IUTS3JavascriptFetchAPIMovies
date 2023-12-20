@@ -20,7 +20,13 @@
         <label><input type="radio" name="sort" value="order[originalLanguage]" /><span  class="button sort__button">Country</span></label>
       </fieldset>
       <fieldset class="filters">
-        <legend>Filters</legend>
+        <legend>
+          Filters
+          <button class="button filters__add"><e>+</e></button>
+          <label class="search"></label>
+        </legend>
+        <div class="filters__propositions"></div>
+        <div class="filters__list"></div>
       </fieldset>
     </nav>
     <article class="movies-list"></article>
